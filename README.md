@@ -18,7 +18,8 @@ module "example" {
     # version = "x.x.x"
 
     # Required variables
-    sftp_users =
+    aws_transfer_server_id =
+    sftp_user =
 }
 ```
 
@@ -31,21 +32,38 @@ module "example" {
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.31.0 |
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_iam_label"></a> [iam\_label](#module\_iam\_label) | cloudposse/label/null | 0.25.0 |
+| <a name="module_label"></a> [label](#module\_label) | cloudposse/label/null | 0.25.0 |
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_iam_policy.s3_access_for_sftp_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role.s3_access_for_sftp_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_s3_object.home_directory](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
+| [aws_s3_object.home_directory_mapping_targets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
+| [aws_transfer_ssh_key.self](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/transfer_ssh_key) | resource |
+| [aws_transfer_user.self](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/transfer_user) | resource |
+| [aws_iam_policy_document.assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.s3_access_for_sftp_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_sftp_users"></a> [sftp\_users](#input\_sftp\_users) | Map of sftp user objects | <pre>map(object({<br>    user_name  = string,<br>    public_key = string<br>    #home_directory_type = optional(string), # "PATH" or "LOGICAL"<br>    #home_directory = optional(string),<br>    # Need a create endpoints/targets option (global default))<br>    #home_directory_mappings = optional(list(object({<br>    #  entry = string,<br>    #  target = string<br>    #}))),<br>    #folders = optional(list(string))) # Support in main<br>    #tags = optional(map(string)) # Enhance module<br>    #policy = optional(string) # Enhance module<br>    #role = optional(string) # Enhance module<br>  }))</pre> | n/a | yes |
+| <a name="input_aws_transfer_server_id"></a> [aws\_transfer\_server\_id](#input\_aws\_transfer\_server\_id) | AWS Transfer Server ID | `string` | n/a | yes |
+| <a name="input_create_home_folder"></a> [create\_home\_folder](#input\_create\_home\_folder) | Create S3 object for user home folder | `bool` | `false` | no |
+| <a name="input_create_mapping_targets"></a> [create\_mapping\_targets](#input\_create\_mapping\_targets) | Create S3 objects for directory mapping targets | `bool` | `false` | no |
+| <a name="input_sftp_user"></a> [sftp\_user](#input\_sftp\_user) | Map of sftp user objects | <pre>object({<br>    user_name      = string,<br>    public_key     = list(string),<br>    folders        = optional(list(string)),<br>    home_directory = optional(string),<br>    home_directory_mappings = optional(list(object({<br>      entry  = string,<br>      target = string<br>    }))),<br>    home_directory_type = optional(string, "LOGICAL"),<br>    policy              = optional(string),<br>    restricted_home     = optional(bool, true),<br>    role                = optional(string),<br>    s3_bucket_name      = optional(string),<br>    tags                = optional(map(string)),<br>  })</pre> | n/a | yes |
 
 ## Outputs
 
