@@ -1,4 +1,3 @@
-#checkov:skip=CKV_TF_1:Local example
 module "transfer-user" {
   source = "../.."
 
