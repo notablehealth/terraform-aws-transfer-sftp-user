@@ -7,6 +7,8 @@
 
 Terraform module to manage AWS transfer service user
 
+Directory mappings are not fully supported currently
+
 ## Usage
 
 Basic usage of this module is as follows:
@@ -18,8 +20,9 @@ module "example" {
     # version = "x.x.x"
 
     # Required variables
-    aws_transfer_server_id =
-    sftp_user =
+        aws_transfer_server_id =
+        s3_bucket_name =
+        sftp_user =
 }
 ```
 
@@ -27,8 +30,8 @@ module "example" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.11.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.64 |
 
 ## Providers
 
@@ -49,8 +52,8 @@ module "example" {
 |------|------|
 | [aws_iam_policy.s3_access_for_sftp_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.s3_access_for_sftp_users](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_s3_object.additional_directories](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.home_directory](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
-| [aws_s3_object.home_directory_mapping_targets](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_transfer_ssh_key.self](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/transfer_ssh_key) | resource |
 | [aws_transfer_user.self](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/transfer_user) | resource |
 | [aws_iam_policy_document.assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -62,12 +65,13 @@ module "example" {
 |------|-------------|------|---------|:--------:|
 | <a name="input_aws_transfer_server_id"></a> [aws\_transfer\_server\_id](#input\_aws\_transfer\_server\_id) | AWS Transfer Server ID | `string` | n/a | yes |
 | <a name="input_create_home_folder"></a> [create\_home\_folder](#input\_create\_home\_folder) | Create S3 object for user home folder | `bool` | `false` | no |
-| <a name="input_create_mapping_targets"></a> [create\_mapping\_targets](#input\_create\_mapping\_targets) | Create S3 objects for directory mapping targets | `bool` | `false` | no |
-| <a name="input_sftp_user"></a> [sftp\_user](#input\_sftp\_user) | Map of sftp user objects | <pre>object({<br>    user_name      = string,<br>    public_key     = list(string),<br>    folders        = optional(list(string)),<br>    home_directory = optional(string),<br>    home_directory_mappings = optional(list(object({<br>      entry  = string,<br>      target = string<br>    }))),<br>    home_directory_type = optional(string, "LOGICAL"),<br>    policy              = optional(string),<br>    restricted_home     = optional(bool, true),<br>    role                = optional(string),<br>    s3_bucket_name      = optional(string),<br>    tags                = optional(map(string)),<br>  })</pre> | n/a | yes |
+| <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | Name of the default S3 bucket | `string` | n/a | yes |
+| <a name="input_sftp_user"></a> [sftp\_user](#input\_sftp\_user) | Map of sftp user objects | <pre>object({<br>    user_name       = string,<br>    public_key      = optional(set(string), []),<br>    add_directories = optional(set(string), []),<br>    home_directory  = optional(string),<br>    home_directory_mappings = optional(list(object({<br>      entry  = string,<br>      target = string<br>    })), []),<br>    policy          = optional(string),<br>    restricted_home = optional(bool, true),<br>    role            = optional(string),<br>    s3_bucket_name  = optional(string),<br>    tags            = optional(map(string)),<br>  })</pre> | n/a | yes |
 
 ## Outputs
 
-No outputs.
-
+| Name | Description |
+|------|-------------|
+| <a name="output_directory_mappings"></a> [directory\_mappings](#output\_directory\_mappings) | Home directory mappings for the user |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

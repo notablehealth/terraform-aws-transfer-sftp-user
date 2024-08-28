@@ -14,8 +14,6 @@ data "aws_iam_policy_document" "assume_role_policy" {
 }
 
 data "aws_iam_policy_document" "s3_access_for_sftp_users" {
-  #for_each = local.enabled ? local.user_names_map : {}
-
   statement {
     sid    = "AllowListingOfUserFolder"
     effect = "Allow"
@@ -23,7 +21,7 @@ data "aws_iam_policy_document" "s3_access_for_sftp_users" {
       "s3:ListBucket"
     ]
     resources = [
-      #each.value.s3_bucket_arn,
+      local.s3_bucket_arn
     ]
   }
 
@@ -40,7 +38,7 @@ data "aws_iam_policy_document" "s3_access_for_sftp_users" {
       "s3:PutObjectACL"
     ]
     resources = [
-      #var.restricted_home ? "${each.value.s3_bucket_arn}/${each.value.user_name}/*" : "${each.value.s3_bucket_arn}/*"
+      var.sftp_user.restricted_home ? "${local.s3_bucket_arn}/${var.sftp_user.user_name}/*" : "${local.s3_bucket_arn}/*"
     ]
   }
 }

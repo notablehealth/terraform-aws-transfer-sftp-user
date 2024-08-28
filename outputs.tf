@@ -1,5 +1,5 @@
 
-#output "output_name" {
-#  description = "output value description"
-#  value       = # expression or reference to value
-#}
+output "directory_mappings" {
+  description = "Home directory mappings for the user"
+  value       = local.directory_mappings
+}
